@@ -1,0 +1,47 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { Card } from '../components/Card/Card.tsx';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body class="bg-background-normal-alternative text-label-normal font-sans antialiased">
+		<Header />
+		
+		<main class="w-full max-w-[1200px] mx-auto px-6 py-10">
+			<div class="mb-10">
+				<h1 class="text-display3 font-bold text-label-strong tracking-tight mb-2">Knowledge Vault</h1>
+				<p class="text-body1 text-label-neutral">Captured contents and insights from the web.</p>
+			</div>
+			
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{
+					posts.map((post) => (
+						<a href={`/blog/${post.id}/`} class="block group h-full">
+							<Card 
+								type={post.data.type as any}
+								title={post.data.title}
+								summary={post.data.description}
+								tags={post.data.tags}
+								sourceUrl={post.data.sourceUrl}
+								date={post.data.pubDate.toISOString().split('T')[0]}
+								hoverable={true}
+								client:load
+							/>
+						</a>
+					))
+				}
+			</div>
+		</main>
+	</body>
+</html>

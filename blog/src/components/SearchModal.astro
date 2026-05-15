@@ -1,0 +1,123 @@
+---
+---
+
+<dialog id="search-modal" class="backdrop:bg-material-dimmer backdrop:backdrop-blur-sm bg-background-elevated-normal text-label-normal border border-line-normal-normal rounded-[20px] shadow-normal-xlarge p-6 w-full max-w-[600px] m-auto max-h-[80vh] overflow-y-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-title3 font-bold">Search</h3>
+    <button id="close-search" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-fill-normal text-label-assistive transition-colors">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+  
+  <div id="search" class="w-full"></div>
+</dialog>
+
+<style is:global>
+  /* Customizing Pagefind UI to match Zettlink design tokens */
+  :root {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--semantic-primary-normal);
+    --pagefind-ui-text: var(--semantic-label-normal);
+    --pagefind-ui-background: var(--semantic-background-elevated-normal);
+    --pagefind-ui-border: var(--semantic-line-normal-normal);
+    --pagefind-ui-tag: var(--semantic-fill-normal);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-image-border-radius: 8px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: var(--font-atkinson);
+  }
+
+  .dark {
+    --pagefind-ui-primary: var(--semantic-primary-normal);
+    --pagefind-ui-text: var(--semantic-label-normal);
+    --pagefind-ui-background: var(--semantic-background-elevated-normal);
+    --pagefind-ui-border: var(--semantic-line-normal-normal);
+    --pagefind-ui-tag: var(--semantic-fill-normal);
+  }
+
+  /* Reset default input styles for better match */
+  #search .pagefind-ui__search-input {
+    background-color: var(--semantic-background-normal-alternative);
+    color: var(--semantic-label-normal);
+    font-weight: 500;
+  }
+  
+  #search .pagefind-ui__result-title {
+    font-weight: 700;
+    font-size: var(--font-title3-size);
+  }
+
+  #search .pagefind-ui__message {
+    color: var(--semantic-label-neutral);
+  }
+</style>
+
+<script is:inline>
+  let isPagefindLoaded = false;
+
+  const loadPagefind = async () => {
+    if (isPagefindLoaded) return;
+    isPagefindLoaded = true;
+
+    try {
+      const pagefindUI = await import('/pagefind/pagefind-ui.js');
+      new pagefindUI.PagefindUI({ 
+        element: "#search", 
+        showImages: false,
+        resetStyles: false
+      });
+      // Import CSS
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/pagefind/pagefind-ui.css';
+      document.head.appendChild(link);
+    } catch (e) {
+      console.warn('Pagefind is only available after build. Run `npm run build` to test search locally.');
+      document.getElementById('search').innerHTML = '<p class="text-label-assistive py-4 text-center">Search is disabled in dev mode. Run build to test.</p>';
+    }
+  };
+
+  const modal = document.getElementById('search-modal');
+  const closeBtn = document.getElementById('close-search');
+
+  window.addEventListener('open-search-modal', () => {
+    modal.showModal();
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    loadPagefind();
+    
+    // Auto focus search input after a tiny delay
+    setTimeout(() => {
+      const input = modal.querySelector('input');
+      if (input) input.focus();
+    }, 100);
+  });
+
+  const closeModal = () => {
+    modal.close();
+    document.body.style.overflow = '';
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    const dialogDimensions = modal.getBoundingClientRect();
+    if (
+      e.clientX < dialogDimensions.left ||
+      e.clientX > dialogDimensions.right ||
+      e.clientY < dialogDimensions.top ||
+      e.clientY > dialogDimensions.bottom
+    ) {
+      closeModal();
+    }
+  });
+
+  // Close on Escape key
+  modal.addEventListener('cancel', () => {
+    document.body.style.overflow = '';
+  });
+</script>

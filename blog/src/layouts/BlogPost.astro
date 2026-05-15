@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { Badge } from '../components/Badge/Badge.tsx';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage, tags, type, sourceUrl } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body class="bg-background-normal-alternative text-label-normal font-sans antialiased">
+		<Header />
+		<main class="w-full max-w-[800px] mx-auto px-6 py-12">
+			<article class="bg-background-elevated-normal rounded-[20px] p-8 shadow-normal-medium border border-line-normal-normal">
+				<div class="mb-8">
+					<div class="flex items-center gap-2 mb-4">
+						<FormattedDate date={pubDate} />
+					</div>
+					<h1 class="text-display3 font-bold text-label-strong tracking-tight mb-4">{title}</h1>
+					<div class="flex flex-wrap gap-2 mb-6">
+						{tags && tags.map(tag => (
+							<Badge variant="subtle" color="primary">#{tag}</Badge>
+						))}
+					</div>
+					<hr class="border-line-normal-normal" />
+				</div>
+				<div class="prose prose-lg dark:prose-invert max-w-none text-label-neutral">
+					<slot />
+				</div>
+			</article>
+		</main>
+	</body>
+</html>
