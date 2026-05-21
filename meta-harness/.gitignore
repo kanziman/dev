@@ -1,0 +1,5 @@
+harvested/
+harvester/cursor.json
+__pycache__/
+.pytest_cache/
+*.pyc
