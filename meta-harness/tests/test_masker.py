@@ -24,6 +24,12 @@ def test_masks_windows_path():
     assert 'acrof' not in result
 
 
+def test_masks_unix_path():
+    result = mask_text('/Users/acrof/DEV/secret.py')
+    assert '[MASKED:PATH]' in result
+    assert 'acrof' not in result
+
+
 def test_masks_email():
     result = mask_text('contact user@example.com for info')
     assert '[MASKED:EMAIL]' in result

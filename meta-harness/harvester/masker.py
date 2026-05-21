@@ -8,7 +8,7 @@ _PATTERNS = [
     (re.compile(r'[Cc]:\\[Uu]sers\\[^\s"\'<>|*?\r\n]+'), '[MASKED:PATH]'),
     (re.compile(r'/[Uu]sers/[^\s"\'<>|*?\r\n]+'), '[MASKED:PATH]'),
     (re.compile(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}'), '[MASKED:EMAIL]'),
-    (re.compile(r'(?i)password\s*[:=]\s*\S+'), '[MASKED:PASSWORD]'),
+    (re.compile(r'(?i)password\s*[:=]\s*\S{1,500}'), '[MASKED:PASSWORD]'),
 ]
 
 
