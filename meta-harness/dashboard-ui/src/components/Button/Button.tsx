@@ -1,0 +1,80 @@
+import React from 'react';
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'solid' | 'outlined';
+  color?: 'primary' | 'assistive' | 'positive' | 'negative';
+  size?: 'small' | 'medium' | 'large';
+  fullWidth?: boolean;
+  loading?: boolean;
+  leadingContent?: React.ReactNode;
+  trailingContent?: React.ReactNode;
+  iconOnly?: boolean;
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = 'solid',
+      color = 'primary',
+      size = 'medium',
+      fullWidth = false,
+      loading = false,
+      disabled,
+      leadingContent,
+      trailingContent,
+      iconOnly,
+      className = '',
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    let sizeClasses = '';
+    if (size === 'small') sizeClasses = iconOnly ? 'w-8 h-8' : 'px-3 h-8 text-label2';
+    else if (size === 'medium') sizeClasses = iconOnly ? 'w-11 h-11' : 'px-4 h-10 text-label1';
+    else if (size === 'large') sizeClasses = iconOnly ? 'w-12 h-12' : 'px-5 h-12 text-body1';
+
+    let colorClasses = '';
+    if (variant === 'solid') {
+      if (color === 'primary') colorClasses = 'bg-primary-normal text-white hover:not-disabled:bg-primary-strong active:not-disabled:bg-primary-heavy disabled:bg-interaction-disable disabled:text-label-disable border-transparent';
+      else if (color === 'assistive') colorClasses = 'bg-fill-normal text-label-normal hover:not-disabled:bg-fill-strong disabled:bg-interaction-disable disabled:text-label-disable border-transparent';
+      else if (color === 'positive') colorClasses = 'bg-status-positive text-white hover:not-disabled:opacity-90 disabled:bg-interaction-disable disabled:text-label-disable border-transparent';
+      else if (color === 'negative') colorClasses = 'bg-status-negative text-white hover:not-disabled:opacity-90 disabled:bg-interaction-disable disabled:text-label-disable border-transparent';
+    } else if (variant === 'outlined') {
+      if (color === 'primary') colorClasses = 'bg-transparent text-primary-normal border-primary-normal hover:not-disabled:bg-[rgba(0,102,255,0.04)] disabled:text-label-disable disabled:border-line-normal-normal';
+      else if (color === 'assistive') colorClasses = 'bg-transparent text-label-normal border-line-normal-normal hover:not-disabled:bg-fill-normal disabled:text-label-disable disabled:border-line-normal-normal';
+      else if (color === 'positive') colorClasses = 'bg-transparent text-status-positive border-status-positive hover:not-disabled:bg-[rgba(18,213,137,0.04)] disabled:text-label-disable disabled:border-line-normal-normal';
+      else if (color === 'negative') colorClasses = 'bg-transparent text-status-negative border-status-negative hover:not-disabled:bg-[rgba(255,66,66,0.04)] disabled:text-label-disable disabled:border-line-normal-normal';
+    }
+
+    const classNames = [
+      'inline-flex items-center justify-center gap-4 rounded-lg font-semibold transition-all duration-200 border',
+      disabled || loading ? 'cursor-not-allowed opacity-80' : 'cursor-pointer',
+      sizeClasses,
+      colorClasses,
+      fullWidth ? 'w-full' : '',
+      className,
+    ].filter(Boolean).join(' ');
+
+    return (
+      <button
+        ref={ref}
+        className={classNames}
+        disabled={disabled || loading}
+        {...props}
+      >
+        {loading ? (
+          <span className="w-4 h-4 border-2 border-white/30 border-t-current rounded-full animate-spin" />
+        ) : (
+          <>
+            {leadingContent && <span className="inline-flex">{leadingContent}</span>}
+            {!iconOnly && <span>{children}</span>}
+            {iconOnly && children}
+            {trailingContent && <span className="inline-flex">{trailingContent}</span>}
+          </>
+        )}
+      </button>
+    );
+  }
+);
+Button.displayName = 'Button';
