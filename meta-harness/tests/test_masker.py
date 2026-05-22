@@ -81,6 +81,49 @@ def test_mask_entry_applies_to_list_content_text_blocks():
     assert blocks[1] == {'type': 'tool_use', 'id': 'tool1', 'name': 'Bash', 'input': {'command': 'ls'}}
 
 
+def test_mask_entry_masks_tool_use_input():
+    entry = {
+        'type': 'assistant',
+        'message': {
+            'role': 'assistant',
+            'content': [
+                {
+                    'type': 'tool_use',
+                    'id': 'tool1',
+                    'name': 'Bash',
+                    'input': {'command': 'echo sk-ant-api03-abcdefghijklmnopqrst'},
+                },
+            ],
+        },
+    }
+    result = mask_entry(entry)
+    cmd = result['message']['content'][0]['input']['command']
+    assert '[MASKED:API_KEY]' in cmd
+    assert 'sk-ant' not in cmd
+
+
+def test_mask_entry_masks_tool_result_nested_content():
+    entry = {
+        'type': 'user',
+        'message': {
+            'role': 'user',
+            'content': [
+                {
+                    'type': 'tool_result',
+                    'tool_use_id': 'tool1',
+                    'content': [
+                        {'type': 'text', 'text': 'result: sk-ant-api03-abcdefghijklmnopqrst'},
+                    ],
+                },
+            ],
+        },
+    }
+    result = mask_entry(entry)
+    nested_text = result['message']['content'][0]['content'][0]['text']
+    assert '[MASKED:API_KEY]' in nested_text
+    assert 'sk-ant' not in nested_text
+
+
 def test_mask_entry_skips_entries_without_message():
     entry = {'type': 'file-history-snapshot', 'data': 'something'}
     result = mask_entry(entry)

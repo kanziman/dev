@@ -18,14 +18,33 @@ def mask_text(text: str) -> str:
     return text
 
 
+def _mask_string_leaves(obj: Any) -> Any:
+    """Recursively mask all string leaf values in a dict or list."""
+    if isinstance(obj, str):
+        return mask_text(obj)
+    if isinstance(obj, list):
+        return [_mask_string_leaves(item) for item in obj]
+    if isinstance(obj, dict):
+        return {k: _mask_string_leaves(v) for k, v in obj.items()}
+    return obj
+
+
 def _mask_content(content: Any) -> Any:
     if isinstance(content, str):
         return mask_text(content)
     if isinstance(content, list):
         result = []
         for block in content:
-            if isinstance(block, dict) and block.get('type') == 'text' and 'text' in block:
+            if not isinstance(block, dict):
+                result.append(block)
+                continue
+            block_type = block.get('type')
+            if block_type == 'text' and 'text' in block:
                 block = {**block, 'text': mask_text(block['text'])}
+            elif block_type == 'tool_use' and 'input' in block:
+                block = {**block, 'input': _mask_string_leaves(block['input'])}
+            elif block_type == 'tool_result' and 'content' in block:
+                block = {**block, 'content': _mask_content(block['content'])}
             result.append(block)
         return result
     return content
