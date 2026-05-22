@@ -49,6 +49,10 @@ def get_daily(harvested_dir: Path, days: int = 30) -> dict:
     counts: dict[str, int] = {}
     for f in harvested_dir.glob('*.jsonl'):
         try:
+            date.fromisoformat(f.stem)  # skip non-date filenames
+        except ValueError:
+            continue
+        try:
             lines = f.read_text(encoding='utf-8').splitlines()
         except OSError:
             continue
