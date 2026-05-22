@@ -32,6 +32,7 @@ def poll_new_entries(cursor_path: Path) -> list[dict]:
     for jsonl_file in jsonl_files:
         file_key = str(jsonl_file)
         start_line = cursor.get(file_key, 0)
+        project = jsonl_file.parent.name
 
         try:
             lines = jsonl_file.read_text(encoding='utf-8', errors='replace').splitlines()
@@ -48,7 +49,7 @@ def poll_new_entries(cursor_path: Path) -> list[dict]:
             except json.JSONDecodeError:
                 continue
             if isinstance(entry, dict) and entry.get('type') in _COLLECT_TYPES:
-                entries.append(entry)
+                entries.append({**entry, '_meta': {'project': project}})
 
         new_cursor[file_key] = len(lines)
 

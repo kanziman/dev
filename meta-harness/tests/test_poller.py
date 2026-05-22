@@ -110,3 +110,16 @@ def test_skips_non_dict_json_entries(fake_projects, tmp_path):
     entries = poll_new_entries(cursor)
     assert len(entries) == 1
     assert entries[0]['message']['content'] == 'ok'
+
+
+def test_entries_include_meta_project(fake_projects, tmp_path):
+    proj_dir = fake_projects / 'myproject'
+    proj_dir.mkdir()
+    write_jsonl(proj_dir / 'session.jsonl', [
+        {'type': 'user', 'message': {'role': 'user', 'content': 'hi'}},
+    ])
+    cursor = tmp_path / 'cursor.json'
+    entries = poll_new_entries(cursor)
+    assert len(entries) == 1
+    assert '_meta' in entries[0]
+    assert entries[0]['_meta']['project'] == 'myproject'
