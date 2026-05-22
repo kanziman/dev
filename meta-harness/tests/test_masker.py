@@ -128,3 +128,9 @@ def test_mask_entry_skips_entries_without_message():
     entry = {'type': 'file-history-snapshot', 'data': 'something'}
     result = mask_entry(entry)
     assert result == entry
+
+
+def test_masks_linux_home_path():
+    result = mask_text('/home/johndoe/projects/secret.py')
+    assert '[MASKED:PATH]' in result
+    assert 'johndoe' not in result

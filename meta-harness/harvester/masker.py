@@ -7,6 +7,7 @@ _PATTERNS = [
     (re.compile(r'Bearer [A-Za-z0-9\-._~+/]+=*'), '[MASKED:BEARER_TOKEN]'),
     (re.compile(r'[Cc]:\\[Uu]sers\\[^\s"\'<>|*?\r\n]+'), '[MASKED:PATH]'),
     (re.compile(r'/[Uu]sers/[^\s"\'<>|*?\r\n]+'), '[MASKED:PATH]'),
+    (re.compile(r'/home/[^\s"\'<>|*?\r\n]+'), '[MASKED:PATH]'),
     (re.compile(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}'), '[MASKED:EMAIL]'),
     (re.compile(r'(?i)password\s*[:=]\s*\S{1,500}'), '[MASKED:PASSWORD]'),
 ]
