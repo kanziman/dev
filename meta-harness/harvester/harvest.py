@@ -29,7 +29,7 @@ def harvest(
 
     if dry_run:
         for entry in masked:
-            print(json.dumps(entry, ensure_ascii=True))
+            print(json.dumps(entry, ensure_ascii=False))
         print(f'\n[dry-run] Would save {len(masked)} entries.')
         return len(masked)
 
