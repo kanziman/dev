@@ -47,7 +47,7 @@ def poll_new_entries(cursor_path: Path) -> list[dict]:
                 entry = json.loads(line)
             except json.JSONDecodeError:
                 continue
-            if entry.get('type') in _COLLECT_TYPES:
+            if isinstance(entry, dict) and entry.get('type') in _COLLECT_TYPES:
                 entries.append(entry)
 
         new_cursor[file_key] = len(lines)

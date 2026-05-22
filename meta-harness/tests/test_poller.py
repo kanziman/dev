@@ -97,3 +97,16 @@ def test_corrupted_cursor_triggers_full_rescan(fake_projects, tmp_path):
 
     entries = poll_new_entries(cursor)
     assert len(entries) == 1
+
+
+def test_skips_non_dict_json_entries(fake_projects, tmp_path):
+    log = fake_projects / 'session.jsonl'
+    log.write_text(
+        '[1, 2, 3]\n'
+        + json.dumps({'type': 'user', 'message': {'role': 'user', 'content': 'ok'}}) + '\n',
+        encoding='utf-8',
+    )
+    cursor = tmp_path / 'cursor.json'
+    entries = poll_new_entries(cursor)
+    assert len(entries) == 1
+    assert entries[0]['message']['content'] == 'ok'
