@@ -151,19 +151,34 @@ Phase 1 masker.py에 Mac/Linux 경로 패턴을 추가한다.
 
 ## 6. Next.js 대시보드 (dashboard-ui/)
 
+### 기반: 기존 /dashboard 복사
+
+`meta-harness/dashboard-ui/`는 루트의 `dashboard/` 폴더를 복사해 시작한다. 기존 컴포넌트와 디자인 시스템을 그대로 재사용하여 빠르게 작업한다.
+
+**재사용 항목:**
+- `src/components/` 전체 — Badge, Button, Card, Icon, Layout/TopNavigation, ThemeProvider
+- `src/app/globals.css` — 커스텀 디자인 토큰 (text-display2, text-label-*, fill-* 등)
+- `src/app/layout.tsx` — 루트 레이아웃 + ThemeProvider
+- `tailwind.config.ts`, `postcss.config.mjs` — 설정 그대로 유지
+
+**추가 의존성:**
+- `recharts` — 날짜별 수집량 바차트용 (기존 package.json에 없음, 추가 설치)
+
 ### 페이지 구성
 
-| 경로 | 내용 |
-|------|------|
-| `/` | Overview: 총 메시지 수, 활성 프로젝트 수, 마지막 수집 시각 |
-| `/stats` | 날짜별 수집량 바차트, 프로젝트별 활동량 목록 |
-| `/traces` | 최근 세션 목록, 클릭 시 Langfuse Cloud 상세 페이지 링크 |
+| 경로 | 내용 | 사용 컴포넌트 |
+|------|------|--------------|
+| `/` | Overview: 총 메시지 수, 활성 프로젝트 수, 마지막 수집 시각 | Card, Badge |
+| `/stats` | 날짜별 수집량 바차트, 프로젝트별 활동량 목록 | Card, Recharts BarChart |
+| `/traces` | 최근 세션 목록, 클릭 시 Langfuse Cloud 상세 페이지 링크 | Card, Badge, Button |
+
+기존 `dashboard/src/app/page.tsx`는 삭제하고 Overview 페이지로 교체한다.
 
 ### 기술 스택
 
-- Next.js App Router
-- Tailwind CSS
-- Recharts (차트)
+- Next.js 16.2.6 App Router (기존과 동일 버전)
+- Tailwind CSS + 기존 globals.css 디자인 시스템
+- Recharts (신규 추가)
 - `fetch`로 FastAPI `localhost:8000` 호출
 
 ---
