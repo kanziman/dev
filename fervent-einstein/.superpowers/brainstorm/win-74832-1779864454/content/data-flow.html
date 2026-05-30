@@ -1,0 +1,160 @@
+<style>
+  .flow-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+    padding: 10px;
+  }
+
+  .flow-step {
+    background: #1e1e2e;
+    border: 1px solid #313244;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .step-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: #f5c2e7;
+    color: #11111b;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .flow-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #cdd6f4;
+    margin-bottom: 12px;
+  }
+
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .flow-card {
+    background: #181825;
+    border: 1px solid #45475a;
+    border-radius: 8px;
+    padding: 12px 15px;
+  }
+
+  .flow-card h4 {
+    margin-top: 0;
+    color: #89b4fa;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+
+  .flow-card p, .flow-card li {
+    font-size: 0.85rem;
+    color: #a6adc8;
+    line-height: 1.4;
+  }
+
+  .flow-card ul {
+    margin: 5px 0;
+    padding-left: 18px;
+  }
+
+  .arrow-down {
+    text-align: center;
+    color: #f5c2e7;
+    font-size: 1.5rem;
+    line-height: 1;
+    margin: -10px 0;
+  }
+</style>
+
+<h2>System Architecture & Data Flow</h2>
+<p class="subtitle">Understanding how data flows between the frontend components and the backend Next.js API routes.</p>
+
+<div class="flow-container">
+  <!-- STEP 1: AUDIO & TRANSCRIPT SYNC -->
+  <div class="flow-step">
+    <div class="step-num">1</div>
+    <div class="flow-title">Transcript Sync & Audio Playback Flow</div>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <h4>Frontend Audio Controller</h4>
+        <ul>
+          <li>Tracks the <code>currentTime</code> of the audio player.</li>
+          <li>Compares it to the current sentence's <code>start</code> and <code>end</code> timestamps in the JSON.</li>
+          <li>Triggers a visual highlight and automatic scroll to the active transcript line.</li>
+        </ul>
+      </div>
+      <div class="flow-card">
+        <h4>User Interactivity</h4>
+        <ul>
+          <li><strong>Click Sentence</strong>: Triggers player seek to <code>start</code> timestamp.</li>
+          <li><strong>Loop Mode</strong>: When active, audio player loops between <code>start</code> and <code>end</code> of the selected sentence.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- STEP 2: SHADOWING VOICE RECORDING -->
+  <div class="flow-step">
+    <div class="step-num">2</div>
+    <div class="flow-title">Shadowing & Recording Flow</div>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <h4>Microphone Recording (Web Audio)</h4>
+        <ul>
+          <li>Uses <code>MediaRecorder API</code> to capture voice from user microphone.</li>
+          <li>Saves the audio chunks in memory as a Blob URL.</li>
+          <li>Allows the user to play back their recorded voice immediately side-by-side with the podcast audio.</li>
+        </ul>
+      </div>
+      <div class="flow-card">
+        <h4>Self-Evaluation & Scoring</h4>
+        <ul>
+          <li>Allows simple self-check (listening side-by-side).</li>
+          <li>Simulates a pronunciation scoring system (visual chart) comparing speaking speed and patterns.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- STEP 3: AI DISCUSSION INTEGRATION -->
+  <div class="flow-step">
+    <div class="step-num">3</div>
+    <div class="flow-title">AI Discussion Chat API Flow</div>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <h4>Frontend Payload</h4>
+        <p>Sends request to <code>/api/chat</code> containing:</p>
+        <ul>
+          <li>User input message.</li>
+          <li>Selected persona (Angela/Mike/Tutor).</li>
+          <li>Context: Episode ID, Active Sentence (so the AI knows what specific line the user is studying).</li>
+        </ul>
+      </div>
+      <div class="flow-card">
+        <h4>Next.js API Route (Backend)</h4>
+        <ul>
+          <li>Receives payload securely on the server.</li>
+          <li>Loads system prompt for the selected persona.</li>
+          <li>Provides a smart, mock response engine by default (making the app runnable without API keys), with simple support for environment keys (e.g. Gemini API) if configured.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

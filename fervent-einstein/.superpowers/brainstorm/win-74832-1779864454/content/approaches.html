@@ -1,0 +1,54 @@
+<h2>Choose an Architectural Approach</h2>
+<p class="subtitle">Select the option that best fits your vision for the "No Stupid Questions" English learning app.</p>
+
+<div class="options" data-multiselect="false">
+  <div class="option" data-choice="integrated" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <span class="label" style="background: #10B981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">RECOMMENDED</span>
+      <h3 style="margin-top: 5px;">Integrated Interactive Study Hub</h3>
+      <p>A unified interface where the Audio Player, synchronized Interactive Transcript, and AI Discussion Chat exist on the same screen (split-pane or tabbed layout).</p>
+      
+      <div class="pros-cons" style="margin-top: 15px;">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>High interactivity: Click a transcript sentence to jump audio, or send a specific sentence directly to the AI Chat to ask about its meaning.</li>
+            <li>No context switching: Practice shadowing and chat about the topic simultaneously.</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>UI layout can be complex and dense on smaller screens.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="separated" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dual-Mode Separated Application</h3>
+      <p>The app is split into two distinct pages: a dedicated "Shadowing Studio" page focusing purely on audio loop/recording, and a separate "AI Debate room" for conversation practice.</p>
+      
+      <div class="pros-cons" style="margin-top: 15px;">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Clean, distraction-free interface for each mode.</li>
+            <li>Simpler codebase and easier UI layout design.</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>User must navigate between pages.</li>
+            <li>Harder to ask the AI about specific sentences from the transcript while studying.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
